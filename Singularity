@@ -44,6 +44,7 @@ From: ubuntu:latest
     sed -e "s@ACCESSMODE = accessdaemon@ACCESSMODE = perf_event@g" config_old.mk > config.mk
     make  && make install
     cd -
+    echo "export PATH=\"${PATH}\"" >> $SINGULARITY_ENVIRONMENT
 
 %help
     This is a singularity container that reproduces result from CGO2021 paper
@@ -63,6 +64,7 @@ From: ubuntu:latest
 
 %environment
    export SINGULARITY_BASE_PATH=${PWD}
+   export SINGULARITY_RUN_PATH=${PATH}
 
 ###### Build YaskSite, it has to be done on the running machine therefore as runscript #######
 %apphelp build
@@ -82,6 +84,10 @@ From: ubuntu:latest
     mkdir build && cd build
     bash -c "source /opt/intel/oneapi/setvars.sh && CC=icc CXX=icpc cmake .. -DyaskSite_DIR=${SINGULARITY_BASE_PATH}/installkit && make"
     cd ${SINGULARITY_BASE_PATH}
+    cd run_variants/YaskSite
+    mkdir-p  build
+    cd build
+    CC=icc CXX=icpc cmake .. -DyaskSite_DIR=${SINGULARITY_BASE_PATH}/installkit
     echo "Building YaskSite success"
 
 ##### App for running yasksite ######
@@ -171,9 +177,11 @@ From: ubuntu:latest
 #### App for running Fig6 and Table 3 measurement #####
 %apphelp Fig6-measurement
     Reproduce measurement results in Figure 6 and Table 3 of the paper.
+    This can be run only after running 'Fig6-prediction' app.
+    Since the cached kernels produced by 'Fig6-prediction' is required here.
 
 %apprun Fig6-measurement
     cd $SINGULARITY_BASE_PATH
-
-
-
+    cd run_variants/YaskSite/build
+    echo "Running Fig6-measurement with arguments $*"
+    echo "executing source /opt/intel/oneapi/setvars.sh && taskset -c 0-$((threads-1)) ./ys_A_il -c $threads -C 6 -S 4 -r 2 -k Wave3D_radius2 -m ../../../machines/CascadelakeSP_Gold-6248.yml -f 8:1:1 -o spatial -s 400:400:400"
