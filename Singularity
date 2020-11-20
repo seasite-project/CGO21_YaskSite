@@ -53,12 +53,13 @@ From: ubuntu:latest
     'singularity run-help --app <app_name> <container_name>'.
     Following are the available apps:
     * build (This is the first app to run before anything else)
-    * YaskSite
-    * Offsite
+    * YaskSite (advanced, not needed to reproduce results)
+    * Offsite (advanced, not needed to reproduce results)
     * Fig3
     * Fig4
     * Fig5
-    * Fig6
+    * Fig6-prediction
+    * Fig6-measurement
 
 %environment
    export SINGULARITY_BASE_PATH=${PWD}
@@ -87,7 +88,7 @@ From: ubuntu:latest
 %apphelp YaskSite
     This is the complete YaskSite app. To see help options type 'singularity run --app YaskSite <container_name> "-h"'.
     Remember: Please pass arguments as a string, i.e., for example to run Wave3D, radius 1 with 20 cores and inner-dimensions in range 500:20:800 on Cascade Lake Gold 6248
-    use 'singularity run --app YaskSite <container_name> "-k Wave3D:3 -m YaskSite/example/mc_files/CascadelakeSP_Gold-6248.yml -R 500:20:800 -c 20 -t 1 -f auto -r 1 -O spatial -o <out folder>"'
+    use 'singularity run --app YaskSite <container_name> "-k Wave3D:3 -m machines/CascadelakeSP_Gold-6248.yml -R 500:20:800 -c 20 -t 1 -f auto -r 1 -O spatial -o <out folder>"'
 
 %apprun YaskSite
     cd $SINGULARITY_BASE_PATH
@@ -100,7 +101,7 @@ From: ubuntu:latest
 %apphelp Fig3
     Reproduces result in Figure 3 of the paper. Input arguments are machine file, threads, radius, and output folder. 
     For reproducing the results in paper set threads to number of cores on 1 socket (20 on Intel Cascade Lake which we tested). 
-    The machine file corresponding to the architecture under consideration is  YaskSite/example/mc_files/CascadelakeSP_Gold-6248.yml.
+    The machine file corresponding to the architecture under consideration is  machines/CascadelakeSP_Gold-6248.yml.
     For example for radius 1 run : 'singularity run --app Fig3 <container_name> "-m <machine_file> -c <ncores> -r 1 -o <out_folder>"'
 
 
@@ -115,7 +116,7 @@ From: ubuntu:latest
 %apphelp Fig4
     Reproduces result in Figure 4 of the paper. Input arguments are machine file, threads, radius, and output folder. 
     For reproducing the results in paper set threads to number of cores on 1 socket.
-    The machine file corresponding to our architecture is YaskSite/example/mc_files/CascadelakeSP_Gold-6248.yml and YaskSite/example/mc_files/Zen_ROME-7452.yml
+    The machine file corresponding to our architecture is machines/CascadelakeSP_Gold-6248.yml and machines/Zen_ROME-7452.yml
     For example for radius 1 and spatial blocking (analytical) run : 'singularity run --app Fig4 <container_name> "-m <machine_file> -c <ncores> -r 1 -o <out_folder>"'
     The file in <out_folder> called 'plain', 'spatial' and 'AT' corrspond to 'plain', 'analytical' and 'GD' keywords.
     The plot is produced by taking the statistics over all sizes in the output files.
@@ -131,7 +132,7 @@ From: ubuntu:latest
 %apphelp Fig5
     Reproduce result in Figure 5 of the paper. Input arguments are machine file, threads, radius, fold and output folder.
     For reproducing the results in paper set threads to number of cores on 1 socket (20 on Intel Cascade Lake which we tested).
-    The machine file corresponding to the architecture under consideration is  YaskSite/example/mc_files/CascadelakeSP_Gold-6248.yml.
+    The machine file corresponding to the architecture under consideration is  machines/CascadelakeSP_Gold-6248.yml.
     For example for radius 1, fold 1:8:1 run : 'singularity run --app Fig5 <container_name> "-m <machine_file> -c <ncores> -r 1 -f 1:8:1 -o <out_folder>"'
 
 %apprun Fig5
@@ -153,15 +154,26 @@ From: ubuntu:latest
     echo "Running Offsite with arguments $*"
     offsite_tune $@
 
-#### App for running Fig6-prediction plots #######
+#### App for running Fig6 and Table 3 prediction #######
 %apphelp Fig6-prediction
-    Reproduce prediction results in Figure 6 of the paper with the use of Offsite.
+    Reproduce prediction results in Figure 6 and Table 3 of the paper with the use of Offsite.
     Input arguments are machine file, config file, benchmark results and ivp. For example for Intel Cascade Lake on which we tested and Wave3d, radius 2 IVP use
-    'singularity run --app Fig6-prediction <container_name> "--machine machines/CascadelakeSP_Gold-6248.yml --config config_clx.tune --bench bench/OMP_BARRIER_CascadelakeSP_Gold-6248_icc19.0.2.187.bench --ivp ivps/Wave3D_radius2.ivp"'
-
+    'singularity run --app Fig6-prediction <container_name> "--machine machines/CascadelakeSP_Gold-6248.yml --config config/config_clx.tune --bench bench/OMP_BARRIER_CascadelakeSP_Gold-6248_icc19.0.2.187.bench --ivp ivps/Wave3D_radius2.ivp"'
+    Expect 8-10 hours to run this, since it generates different YASK kernels and tests them.
+    Also it needs diskspace (10 GB) as the generated kernels will be cached for later execution in Fig6-measurements app.
 
 %apprun Fig6-prediction
     cd $SINGULARITY_BASE_PATH
     echo "Running Fig6-prediction with arguments $*"
-    echo "excuting export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --machine machines/CascadelakeSP_Gold-6248.yml --compiler icc --impl impls/pirk/ --kernel kernels/pirk/ --method methods/implicit/radauIIA7. ode --mode MODEL --verbose --filter-yasksite-opt $@"
-    bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --machine machines/CascadelakeSP_Gold-6248.yml --compiler icc --impl impls/pirk/ --kernel kernels/pirk/ --method methods/implicit/radauIIA7. ode --mode MODEL --verbose --filter-yasksite-opt $@"
+    echo "excuting export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --compiler icc --impl impls/pirk/ --kernel kernels/pirk/ --method methods/implicit/radauIIA7. ode --mode MODEL --verbose --filter-yasksite-opt $@"
+    bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --compiler icc --impl impls/pirk/ --kernel kernels/pirk/ --method methods/implicit/radauIIA7. ode --mode MODEL --verbose --filter-yasksite-opt $@"
+
+#### App for running Fig6 and Table 3 measurement #####
+%apphelp Fig6-measurement
+    Reproduce measurement results in Figure 6 and Table 3 of the paper.
+
+%apprun Fig6-measurement
+    cd $SINGULARITY_BASE_PATH
+
+
+
