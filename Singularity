@@ -190,5 +190,5 @@ From: ubuntu:latest
     cd $SINGULARITY_BASE_PATH
     cd run_variants/YaskSite/build
     echo "Running Fig6-measurement with arguments $*"
-    echo "executing source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/build/run_script.sh -p run_variant/YaskSite/build $@"
-    bash -c "source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/build/run_script.sh -p run_variant/YaskSite/build $@"
+    echo "executing source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/run_script.sh -p run_variant/YaskSite/build $@"
+    bash -c "source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/run_script.sh -p run_variant/YaskSite/build $@"
