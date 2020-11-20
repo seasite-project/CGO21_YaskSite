@@ -8,7 +8,7 @@ Clone the repo
 
 ## Step 2
 Build/Download the singularity container. 
-### Alternative 1: Build the container (need fakeroot right)
+### Alternative 1: Singularity build (need fakeroot right)
 ```build --fakeroot YS_CGO.sif Singularity```
 
 ### Alternative 2: Download the pre-build container (approximately 2 GB in size)
