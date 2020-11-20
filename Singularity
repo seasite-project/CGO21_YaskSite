@@ -10,6 +10,7 @@ From: ubuntu:latest
     apt-get install -y cmake
     apt-get install -y cmake-curses-gui
     apt-get install -y git
+    apt-get install -y vim
     apt install -y software-properties-common
     add-apt-repository -y  ppa:deadsnakes/ppa
     apt install -y python3.8
@@ -17,6 +18,16 @@ From: ubuntu:latest
     apt-get install -y bc
     apt-get install -y unzip
     apt-get install -y wget
+    wget https://zenodo.org/record/4282544/files/seasite-project/Offsite-v0.2.0cgoAD.zip?download=1 -O Offsite.zip
+    unzip Offsite.zip -d Offsite
+    cd Offsite/seasite-project-Offsite-d8455cc
+    apt-get install -y python3-pip
+    pip3 install --user wheel
+    git clone https://github.com/RRZE-HPC/kerncraft && cd kerncraft
+    python3 setup.py bdist_wheel && pip3 install --user dist/kerncraft*.whl
+    iaca_get --I-accept-the-Intel-What-If-Pre-Release-License-Agreement-and-please-take-my-soul
+    cd -
+    python3 setup.py bdist_wheel && pip3 install --user dist/offsite*.whl
     wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
     apt-get install -y gnupg
     apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
@@ -38,13 +49,13 @@ From: ubuntu:latest
     There are different apps available to find help of each app use the following:
     'singularity run-help --app <app_name> <container_name>'.
     Following are the available apps:
-	* build (This is the first app to run before anything else)
-	* YaskSite
-	* Offsite
-	* Fig3
-	* Fig4
-	* Fig5
-	* Fig6
+    * build (This is the first app to run before anything else)
+    * YaskSite
+    * Offsite
+    * Fig3
+    * Fig4
+    * Fig5
+    * Fig6
 
 %environment
    export SINGULARITY_BASE_PATH=${PWD}
@@ -58,6 +69,7 @@ From: ubuntu:latest
     To run it use 'singularity run --app build <container_name>'
 
 %apprun build
+    #wget TODO
     git clone https://github.com/seasite-project/YaskSite.git
     cd YaskSite
     mkdir build && cd build
@@ -117,12 +129,36 @@ From: ubuntu:latest
     Reproduce result in Figure 5 of the paper. Input arguments are machine file, threads, radius, fold and output folder.
     For reproducing the results in paper set threads to number of cores on 1 socket (20 on Intel Cascade Lake which we tested).
     The machine file corresponding to the architecture under consideration is  YaskSite/example/mc_files/CascadelakeSP_Gold-6248.yml.
-    For example for radius 1, fold 1:8:1 run : 'singularity run --app Fig3 <container_name> "-m <machine_file> -c <ncores> -r 1 -f 1:8:1 -o <out_folder>"'
+    For example for radius 1, fold 1:8:1 run : 'singularity run --app Fig5 <container_name> "-m <machine_file> -c <ncores> -r 1 -f 1:8:1 -o <out_folder>"'
 
 %apprun Fig5
     cd $SINGULARITY_BASE_PATH
-    echo "Running Fig4 with arguments $*"
+    echo "Running Fig5 with arguments $*"
     threads=$(echo "$*" | grep -o -P '(?<=\-c).*?(?=\-)')
     echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:400 -O plain $@"
     bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:400 -O plain $@"
 
+##### App for running Offsite ########
+%apphelp Offsite
+    App for running Offsite. Please refer to Offsite help to get more information on input arguments.
+    Offsite help can be found by using 'singularity run --app Offsite <container_name> "-h"'.
+    Run Offsite using 'singularity run --app Offsite <container_name> "<input_arguments>"'.
+
+
+%apprun Offsite
+    cd $SINGULARITY_BASE_PATH
+    echo "Running Offsite with arguments $*"
+    offsite_tune $@
+
+#### App for running Fig6-prediction plots #######
+%apphelp Fig6-prediction
+    Reproduce prediction results in Figure 6 of the paper with the use of Offsite.
+    Input arguments are machine file, config file, benchmark results and ivp. For example for Intel Cascade Lake on which we tested and Wave3d, radius 2 IVP use
+    'singularity run --app Fig6-prediction <container_name> "--machine machines/CascadelakeSP_Gold-6248.yml --config config_clx.tune --bench bench/OMP_BARRIER_CascadelakeSP_Gold-6248_icc19.0.2.187.bench --ivp ivps/Wave3D_radius2.ivp"'
+
+
+%apprun Fig6-prediction
+    cd $SINGULARITY_BASE_PATH
+    echo "Running Fig6-prediction with arguments $*"
+    echo "excuting export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --machine machines/CascadelakeSP_Gold-6248.yml --compiler icc --impl impls/pirk/ --kernel kernels/pirk/ --method methods/implicit/radauIIA7. ode --mode MODEL --verbose --filter-yasksite-opt $@"
+    bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --machine machines/CascadelakeSP_Gold-6248.yml --compiler icc --impl impls/pirk/ --kernel kernels/pirk/ --method methods/implicit/radauIIA7. ode --mode MODEL --verbose --filter-yasksite-opt $@"
