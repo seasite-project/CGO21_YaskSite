@@ -85,9 +85,10 @@ From: ubuntu:latest
     bash -c "source /opt/intel/oneapi/setvars.sh && CC=icc CXX=icpc cmake .. -DyaskSite_DIR=${SINGULARITY_BASE_PATH}/installkit && make"
     cd ${SINGULARITY_BASE_PATH}
     cd run_variants/YaskSite
-    mkdir-p  build
+    mkdir -p  build
     cd build
-    CC=icc CXX=icpc cmake .. -DyaskSite_DIR=${SINGULARITY_BASE_PATH}/installkit
+    bash -c "source /opt/intel/oneapi/setvars.sh && CC=icc CXX=icpc cmake .. -DyaskSite_DIR=${SINGULARITY_BASE_PATH}/installkit && make"
+    cd ${SINGULARITY_BASE_PATH}
     echo "Building YaskSite success"
 
 ##### App for running yasksite ######
@@ -109,7 +110,6 @@ From: ubuntu:latest
     For reproducing the results in paper set threads to number of cores on 1 socket (20 on Intel Cascade Lake which we tested). 
     The machine file corresponding to the architecture under consideration is  machines/CascadelakeSP_Gold-6248.yml.
     For example for radius 1 run : 'singularity run --app Fig3 <container_name> "-m <machine_file> -c <ncores> -r 1 -o <out_folder>"'
-
 
 %apprun Fig3
     cd $SINGULARITY_BASE_PATH
@@ -163,8 +163,11 @@ From: ubuntu:latest
 #### App for running Fig6 and Table 3 prediction #######
 %apphelp Fig6-prediction
     Reproduce prediction results in Figure 6 and Table 3 of the paper with the use of Offsite.
-    Input arguments are machine file, config file, benchmark results and ivp. For example for Intel Cascade Lake on which we tested and Wave3d, radius 2 IVP use
-    'singularity run --app Fig6-prediction <container_name> "--machine machines/CascadelakeSP_Gold-6248.yml --config config/config_clx.tune --bench bench/OMP_BARRIER_CascadelakeSP_Gold-6248_icc19.0.2.187.bench --ivp ivps/Wave3D_radius2.ivp"'
+    Input arguments are machine file, config file, benchmark results, ivp and
+    output database file name. For example for Intel Cascade Lake on which we
+    tested and Wave3d IVP with radius 2 use 
+    'singularity run --app Fig6-prediction <container_name> "--machine machines/CascadelakeSP_Gold-6248.yml --config config/config_clx.tune --bench bench/OMP_BARRIER_CascadelakeSP_Gold-6248_icc19.0.2.187.bench --ivp ivps/Wave3D_radius2.ivp --db out.db"'
+    The output will be in 'out.db'
     Expect 8-10 hours to run this, since it generates different YASK kernels and tests them.
     Also it needs diskspace (10 GB) as the generated kernels will be cached for later execution in Fig6-measurements app.
 
@@ -177,11 +180,15 @@ From: ubuntu:latest
 #### App for running Fig6 and Table 3 measurement #####
 %apphelp Fig6-measurement
     Reproduce measurement results in Figure 6 and Table 3 of the paper.
-    This can be run only after running 'Fig6-prediction' app.
-    Since the cached kernels produced by 'Fig6-prediction' is required here.
+    This can be run only after running 'Fig6-prediction' app, since the cached kernels produced by 'Fig6-prediction' is required here.
+    The input arguments are number of threads, machine file, kernel, radius, output folder and config file.
+    For example for running Wave3D, radius 2, on Intel Cascade Lake 6248 use:
+    'singularity run --app Fig6-measurement <container_name> "-m machines/CascadelakeSP_Gold-6248.yml -k Wave3D -r 2 --config config/config_clx.tune -o measurements"'
+    This will write results to a folder called 'measurements'.
 
 %apprun Fig6-measurement
     cd $SINGULARITY_BASE_PATH
     cd run_variants/YaskSite/build
     echo "Running Fig6-measurement with arguments $*"
-    echo "executing source /opt/intel/oneapi/setvars.sh && taskset -c 0-$((threads-1)) ./ys_A_il -c $threads -C 6 -S 4 -r 2 -k Wave3D_radius2 -m ../../../machines/CascadelakeSP_Gold-6248.yml -f 8:1:1 -o spatial -s 400:400:400"
+    echo "executing source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/build/run_script.sh -p run_variant/YaskSite/build $@"
+    bash -c "source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/build/run_script.sh -p run_variant/YaskSite/build $@"
