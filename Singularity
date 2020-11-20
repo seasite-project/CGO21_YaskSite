@@ -24,9 +24,12 @@ From: ubuntu:latest
     apt-get install -y python3-pip
     pip3 install --user wheel
     git clone https://github.com/RRZE-HPC/kerncraft && cd kerncraft
+    git checkout v0.8.5
     python3 setup.py bdist_wheel && pip3 install --user dist/kerncraft*.whl
+    export PATH=$PATH:/root/.local/bin
     iaca_get --I-accept-the-Intel-What-If-Pre-Release-License-Agreement-and-please-take-my-soul
     cd -
+    apt-get install -y libpcre3-dev
     python3 setup.py bdist_wheel && pip3 install --user dist/offsite*.whl
     wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
     apt-get install -y gnupg
