@@ -18,19 +18,9 @@ From: ubuntu:latest
     apt-get install -y bc
     apt-get install -y unzip
     apt-get install -y wget
-    wget https://zenodo.org/record/4282544/files/seasite-project/Offsite-v0.2.0cgoAD.zip?download=1 -O Offsite.zip
-    unzip Offsite.zip -d Offsite
-    cd Offsite/seasite-project-Offsite-d8455cc
-    apt-get install -y python3-pip
-    pip3 install --user wheel
-    git clone https://github.com/RRZE-HPC/kerncraft && cd kerncraft
-    git checkout v0.8.5
-    python3 setup.py bdist_wheel && pip3 install --user dist/kerncraft*.whl
-    export PATH=$PATH:/root/.local/bin
-    iaca_get --I-accept-the-Intel-What-If-Pre-Release-License-Agreement-and-please-take-my-soul
-    cd -
     apt-get install -y libpcre3-dev
-    python3 setup.py bdist_wheel && pip3 install --user dist/offsite*.whl
+    apt-get install -y  python3-pip
+    pip3 install --user wheel
     wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
     apt-get install -y gnupg
     apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
@@ -64,17 +54,26 @@ From: ubuntu:latest
 
 %environment
    export SINGULARITY_BASE_PATH=${PWD}
-   export SINGULARITY_RUN_PATH=${PATH}
+   #export SINGULARITY_RUN_PATH=${PATH}
+   export PYTHONPATH=${SINGULARITY_BASE_PATH}/installkit/lib/python3.8/site-packages/
+   export PATH=$PATH:${SINGULARITY_BASE_PATH}/installkit/bin/
 
 ###### Build YaskSite, it has to be done on the running machine therefore as runscript #######
 %apphelp build
-    App for building YaskSite. This is the first app to run before running anything else.
+    App for building YaskSite, kerncraft and Offsite. This is the first app to run before running anything else.
     It installs YaskSite, since it detects the machine when building this build process is made as
     an app and user should run this on the machine where they are running the rest of the benchmarks.
     Currently YaskSite supports the following architecures Intel Sandy Bridge, Ivy Bridge, Haswell, Broadwell, Skylake, Cascade Lake  and AMD Naples, ROME.
     To run it use 'singularity run --app build <container_name>'
 
 %apprun build
+    cd ${SINGULARITY_BASE_PATH}    
+    rm kerncraft -rf
+    rm Offsite -rf
+    rm installkit -rf
+    rm tmp -rf
+    rm tmp_YaskSite -rf
+
     #wget TODO
     git clone https://github.com/seasite-project/YaskSite.git
     cd YaskSite
@@ -89,6 +88,22 @@ From: ubuntu:latest
     cd build
     CC=icc CXX=icpc cmake .. -DyaskSite_DIR=${SINGULARITY_BASE_PATH}/installkit
     echo "Building YaskSite success"
+
+    cd $SINGULARITY_BASE_PATH
+    
+    git clone https://github.com/RRZE-HPC/kerncraft && cd kerncraft
+    git checkout v0.8.5
+    export PYTHONPATH=${SINGULARITY_BASE_PATH}/installkit/lib/python3.8/site-packages/
+    export PATH=$PATH:${SINGULARITY_BASE_PATH}/installkit/bin/
+    python3 setup.py bdist_wheel && pip3 install --prefix=${SINGULARITY_BASE_PATH}/installkit dist/kerncraft*.whl
+    iaca_get --I-accept-the-Intel-What-If-Pre-Release-License-Agreement-and-please-take-my-soul
+    cd $SINGULARITY_BASE_PATH
+    wget https://zenodo.org/record/4282544/files/seasite-project/Offsite-v0.2.0cgoAD.zip?download=1 -O Offsite.zip
+    unzip Offsite.zip -d Offsite
+    cd Offsite/seasite-project-Offsite-d8455cc
+    python3 setup.py bdist_wheel && pip3 install --prefix=${SINGULARITY_BASE_PATH}/installkit dist/offsite*.whl
+    cd $SINGULARITY_BASE_PATH
+    echo "Building Offsite success"
 
 ##### App for running yasksite ######
 %apphelp YaskSite
@@ -156,6 +171,8 @@ From: ubuntu:latest
 
 
 %apprun Offsite
+    export PYTHONPATH=${SINGULARITY_BASE_PATH}/installkit/lib/python3.8/site-packages/
+    export PATH=$PATH:${SINGULARITY_BASE_PATH}/installkit/bin/
     cd $SINGULARITY_BASE_PATH
     echo "Running Offsite with arguments $*"
     offsite_tune $@
@@ -169,6 +186,8 @@ From: ubuntu:latest
     Also it needs diskspace (10 GB) as the generated kernels will be cached for later execution in Fig6-measurements app.
 
 %apprun Fig6-prediction
+    export PYTHONPATH=${SINGULARITY_BASE_PATH}/installkit/lib/python3.8/site-packages/
+    export PATH=$PATH:${SINGULARITY_BASE_PATH}/installkit/bin/
     cd $SINGULARITY_BASE_PATH
     echo "Running Fig6-prediction with arguments $*"
     echo "excuting export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --compiler icc --impl impls/pirk/ --kernel kernels/pirk/ --method methods/implicit/radauIIA7. ode --mode MODEL --verbose --filter-yasksite-opt $@"
