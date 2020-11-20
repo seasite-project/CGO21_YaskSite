@@ -73,6 +73,7 @@ From: ubuntu:latest
     rm installkit -rf
     rm tmp -rf
     rm tmp_YaskSite -rf
+    rm YaskSite -rf
 
     #wget TODO
     git clone https://github.com/seasite-project/YaskSite.git
@@ -171,11 +172,9 @@ From: ubuntu:latest
 
 
 %apprun Offsite
-    export PYTHONPATH=${SINGULARITY_BASE_PATH}/installkit/lib/python3.8/site-packages/
-    export PATH=$PATH:${SINGULARITY_BASE_PATH}/installkit/bin/
     cd $SINGULARITY_BASE_PATH
     echo "Running Offsite with arguments $*"
-    offsite_tune $@
+    bash -c "PYTHONPATH=${SINGULARITY_BASE_PATH}/installkit/lib/python3.8/site-packages/ && PATH=$PATH:YaskSite/example/build:${SINGULARITY_BASE_PATH}/installkit/bin/ && source /opt/intel/oneapi/setvars.sh && offsite_tune $@"
 
 #### App for running Fig6 and Table 3 prediction #######
 %apphelp Fig6-prediction
