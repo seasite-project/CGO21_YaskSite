@@ -84,7 +84,7 @@ From: ubuntu:latest
     mkdir build && cd build
     bash -c "source /opt/intel/oneapi/setvars.sh && CC=icc CXX=icpc cmake .. -DyaskSite_DIR=${SINGULARITY_BASE_PATH}/installkit && make"
     cd ${SINGULARITY_BASE_PATH}
-    cd run_variants/YaskSite
+    cd run_variant/YaskSite
     mkdir -p  build
     cd build
     bash -c "source /opt/intel/oneapi/setvars.sh && CC=icc CXX=icpc cmake .. -DyaskSite_DIR=${SINGULARITY_BASE_PATH}/installkit && make"
