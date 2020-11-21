@@ -52,12 +52,11 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 
 opts_w_space=$(cat ${CONFIG_FILE} | grep "blocking =.*" | cut -d"=" -f2 | sed -e "s@;@@g")
-opts=$(echo ${opts})
+opts=$(echo ${opts_w_space})
 
 #folds="8:1:1 1:8:1"
 folds_w_space=$(cat ${CONFIG_FILE} | grep "folding =.*" | cut -d"=" -f2 | sed -e "s@;@@g")
 folds=$(echo ${folds_w_space})
-
 runFolder="${RUN_PATH}"
 
 machine=${MACHINEFILE}

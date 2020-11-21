@@ -261,12 +261,11 @@ From: ubuntu:latest
     * IVP kernel = This is either Heat3D or Wave3D depending on the IVP problem.
     * Output folder = Name of output folder where CSV results are written to.
 
-    For example for running Wave3D, radius 2, on Intel CLX use: 'singularity run --app Fig6-measurement <container_name> "-c 20 -m examples/machines/CascadelakeSP_Gold-6248.yml -k Wave3D -r 2 --config config/config_clx.tune -o Fig6_meas_Wave3D_radius2"'
+    For example for running Wave3D, radius 2, on Intel CLX use: 'singularity run --app Fig6-measurement <container_name> "-c 20 -m examples/machines/CascadelakeSP_Gold-6248.yml -k Wave3D -r 2 --config examples/config/config_clx.tune -o Fig6_meas_Wave3D_radius2"'
     This will write results to a folder called 'Fig6_meas_Wave3D_radius2'.
 
 %apprun Fig6-measurement
     cd $SINGULARITY_BASE_PATH
-    cd run_variants/YaskSite/build
     echo "Running Fig6-measurement with arguments $*"
     echo "executing source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/run_script.sh -p run_variant/YaskSite/build $@"
     bash -c "source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/run_script.sh -p run_variant/YaskSite/build $@"
