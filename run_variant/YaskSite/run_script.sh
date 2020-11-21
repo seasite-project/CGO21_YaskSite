@@ -102,7 +102,7 @@ for var in ${vars}; do
                     #inner_size=${inner_size_float%.*}
                     echo ${size} >> ${raw_file}
                     OMP_NUM_THREADS=${core} OMP_PLACES=cores OMP_PROC_BIND=close
-                    taskset -c 0-$((core-1)) $exec_file -c ${core} -s ${size}:${size}:${size} -C 6 -S 4 -f ${fold} -o ${opt} -k ${kernel} -r ${radius} -m ${machine} > tmp.txt
+                    likwid-pin -c S0:0-$((core-1)) $exec_file -c ${core} -s ${size}:${size}:${size} -C 6 -S 4 -f ${fold} -o ${opt} -k ${kernel} -r ${radius} -m ${machine} > tmp.txt
                     cat tmp.txt >>${raw_file}
                     impl_time=$(grep "Total time per iter" tmp.txt | cut -d"=" -f2 | cut -d"s" -f 1)
                     impl_perf=$(grep "Total performance" tmp.txt | cut -d"=" -f2 | cut -d"M" -f 1)

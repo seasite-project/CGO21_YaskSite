@@ -116,7 +116,7 @@ From: ubuntu:latest
 %apprun YaskSite
     cd $SINGULARITY_BASE_PATH
     echo "Running YaskSite with arguments $*"
-    threads=$(echo "$*" | grep -o -P '(?<=\-c).*?(?=\-)')
+    threads=$(echo "$*" | grep -o -P "\-c.*" | cut -d"-" -f2 | cut -d"c" -f 2)
     echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid $@"
     bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid $@"
 
@@ -130,13 +130,14 @@ From: ubuntu:latest
 
     For example for CLX with 20 threads : 'singularity run --app Fig3 <container_name> "-m <machine_file> -c <ncores>"'
 
-    The app outputs CSV files in results/Fig3 folder.
+    The app outputs CSV files in results/Fig3 folder. 
+    The column corresponding to 'mlups' is the measurement and 'ECM_mlups' is the prediction.
 
 %apprun Fig3
     cd $SINGULARITY_BASE_PATH
     mkdir -p results
     echo "Running Fig3 with arguments $*"
-    threads=$(echo "$*" | grep -o -P '(?<=\-c).*?(?=\-)')
+    threads=$(echo "$*" | grep -o -P "\-c.*" | cut -d"-" -f2 | cut -d"c" -f 2)
     echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:1000 -f auto -r 1 -O plain:spatial -o results/Fig3 $@"
     bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:1000 -f auto -r 1 -O plain:spatial -o results/Fig3 $@"
     echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:1000 -f auto -r 4 -O plain:spatial -o results/Fig3 $@"
@@ -152,7 +153,8 @@ From: ubuntu:latest
 
     For example for CLX and 20 threads : 'singularity run --app Fig4 <container_name> "-m <machine_file> -c <ncores>"'
 
-    The app outputs CSV files in results/Fig4 folder.
+    The app outputs CSV files in results/Fig4 folder. 
+    The column corresponding to 'mlups' are the required performance.
     The 'plain', 'spatial' and 'AT' corrspond to 'plain', 'analytical' and 'GD' keywords in the figure.
     The plot can be produced by taking the statistics over all sizes in the output files.
 
@@ -160,7 +162,7 @@ From: ubuntu:latest
     cd $SINGULARITY_BASE_PATH
     mkdir -p results
     echo "Running Fig4 with arguments $*"
-    threads=$(echo "$*" | grep -o -P '(?<=\-c).*?(?=\-)')
+    threads=$(echo "$*" | grep -o -P "\-c.*" | cut -d"-" -f2 | cut -d"c" -f 2)
     echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:1000 -f auto -r 1 -O plain:spatial:AT -o results/Fig4 $@"
     bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:1000 -f auto -r 1 -O plain:spatial:AT -o results/Fig4 $@"
     echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:1000 -f auto -r 2 -O plain:spatial:AT -o results/Fig4 $@"
@@ -180,13 +182,13 @@ From: ubuntu:latest
     For example for CLX and 20 threads : 'singularity run --app Fig5 <container_name> "-m <machine_file> -c <ncores>"'
 
     The app outputs CSV files in results/Fig5 folder.
-
+    The column corresponding to 'mlups' is the measurement and 'ECM_mlups' is the prediction.
 
 %apprun Fig5
     cd $SINGULARITY_BASE_PATH
     mkdir -p results
     echo "Running Fig5 with arguments $*"
-    threads=$(echo "$*" | grep -o -P '(?<=\-c).*?(?=\-)')
+    threads=$(echo "$*" | grep -o -P "\-c.*" | cut -d"-" -f2 | cut -d"c" -f 2)
    echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:400 -O plain -f 1:1:8 -r 1 -o results/Fig5 $@"
     bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:400 -O plain -f 1:1:8 -r 1 -o results/Fig5 $@"
     echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:400 -O plain -f 1:8:1 -r 1 -o results/Fig5 $@"
