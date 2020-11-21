@@ -100,9 +100,9 @@ From: ubuntu:latest
     python3 setup.py bdist_wheel && pip3 install --prefix=${SINGULARITY_BASE_PATH}/installkit dist/kerncraft*.whl
     iaca_get --I-accept-the-Intel-What-If-Pre-Release-License-Agreement-and-please-take-my-soul
     cd $SINGULARITY_BASE_PATH
-    wget https://zenodo.org/record/4283004/files/seasite-project/Offsite-v0.2.0cgo2021.zip?download=1 -O Offsite.zip
+    wget https://zenodo.org/record/4283107/files/seasite-project/Offsite-v0.2.0cgo21.zip?download=1 -O Offsite.zip
     unzip Offsite.zip -d Offsite
-    cd Offsite/seasite-project-Offsite-446f484
+    cd Offsite/seasite-project-Offsite-3509342
     python3 setup.py bdist_wheel && pip3 install --prefix=${SINGULARITY_BASE_PATH}/installkit dist/offsite*.whl
     cd $SINGULARITY_BASE_PATH
     echo "Building Offsite success"
