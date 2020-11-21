@@ -75,8 +75,9 @@ From: ubuntu:latest
     rm tmp_YaskSite -rf
     rm YaskSite -rf
 
-    #wget TODO
-    git clone https://github.com/seasite-project/YaskSite.git
+    wget https://zenodo.org/record/4283028/files/seasite-project/YaskSite-v0.4.7.zip?download=1 -O YaskSite.zip
+    unzip YaskSite.zip
+    mv seasite-project-YaskSite-663ac01 YaskSite
     cd YaskSite
     mkdir build && cd build
     bash -c "source /opt/intel/oneapi/setvars.sh && CC=icc CXX=icpc cmake .. -DI_AGREE_ALL_TERMS_AND_CONDITIONS=true -DCMAKE_INSTALL_PREFIX=${SINGULARITY_BASE_PATH}/installkit -DTEMP_DIR=${SINGULARITY_BASE_PATH}/tmp_YaskSite -DLIKWID_LIBRARIES=/usr/local/lib/liblikwid.so -DLIKWID_INCLUDE_DIR=/usr/local/include && make && make install"
@@ -92,7 +93,6 @@ From: ubuntu:latest
     echo "Building YaskSite success"
 
     cd $SINGULARITY_BASE_PATH
-    
     git clone https://github.com/RRZE-HPC/kerncraft && cd kerncraft
     git checkout v0.8.5
     export PYTHONPATH=${SINGULARITY_BASE_PATH}/installkit/lib/python3.8/site-packages/
