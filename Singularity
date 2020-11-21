@@ -262,10 +262,11 @@ From: ubuntu:latest
     * threads = For reproducing the results in the paper set threads to number of cores on 1 socket (20 on CLX and 32 on ROME which we tested).
     * machine file = The machine files corresponding to the architecture we considered are examples/machines/CascadelakeSP_Gold-6248.yml, examples/machines/examples/machines/Zen_ROME-7452.yml.
     * config file = These contain the settings like fold sizes and blocking. Config files corresponding to CLX and ROME are in examples/config/config_clx.tune and examples/config/config_rome.tune
-    * IVP kernel = This is either Heat3D or Wave3D depending on the IVP problem.
+    * IVP kernel = This is either Heat3D, Wave3D_radius2  or Wave3D_radius4 depending on the IVP problem.
     * Output folder = Name of output folder where CSV results are written to.
 
-    For example for running Wave3D, radius 2, on Intel CLX use: 'singularity run --app Fig6-measurement <container_name> "-c 20 -m examples/machines/CascadelakeSP_Gold-6248.yml -k Wave3D -r 2 --config examples/config/config_clx.tune -o Fig6_meas_Wave3D_radius2"'
+    For example for running Wave3D, radius 2, on Intel CLX use: 'singularity run
+    --app Fig6-measurement <container_name> "-c 20 -m examples/machines/CascadelakeSP_Gold-6248.yml -k Wave3D_radius2 -r 2 --config examples/config/config_clx.tune -o Fig6_meas_Wave3D_radius2"'
     This will write results to a folder called 'Fig6_meas_Wave3D_radius2'.
 
 %apprun Fig6-measurement
