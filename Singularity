@@ -183,6 +183,7 @@ From: ubuntu:latest
 
     The app outputs CSV files in results/Fig5 folder.
     The column corresponding to 'mlups' is the measurement and 'ECM_mlups' is the prediction.
+    Note the run will take long time (approx. 3 hours).
 
 %apprun Fig5
     cd $SINGULARITY_BASE_PATH
@@ -239,7 +240,7 @@ From: ubuntu:latest
 
     The output will be in SQL database 'Fig6_Wave3d_radius2.db'(see 'impl_variant_prediction' table).
     If the same machine files as in the paper are used it will additionally
-    convert SQL database to csv.
+    convert SQL database to csv and write it in results/Fig-prediction folder.
     Expect 8-10 hours to run this, since it generates different YASK kernels and tests them.
     Also it needs diskspace (10 GB) as the generated kernels will be cached for later execution in Fig6-measurements app.
 
