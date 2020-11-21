@@ -222,14 +222,20 @@ From: ubuntu:latest
     echo "Running Offsite with arguments $*"
     bash -c "PYTHONPATH=${SINGULARITY_BASE_PATH}/installkit/lib/python3.8/site-packages/ && PATH=$PATH:YaskSite/example/build:${SINGULARITY_BASE_PATH}/installkit/bin/ && source /opt/intel/oneapi/setvars.sh && offsite_tune $@"
 
-#### App for running Fig6 and Table 3 prediction #######
+#### App for running Fig6 and Table 3 prediction results #######
 %apphelp Fig6-prediction
     Reproduce prediction results in Figure 6 and Table 3 of the paper with the use of Offsite.
-    Input arguments are machine file, config file, benchmark results, ivp and
-    output database file name. For example for Intel Cascade Lake on which we
-    tested and Wave3d IVP with radius 2 use 
-    'singularity run --app Fig6-prediction <container_name> "--machine machines/CascadelakeSP_Gold-6248.yml --config config/config_clx.tune --bench bench/OMP_BARRIER_CascadelakeSP_Gold-6248_icc19.0.2.187.bench --ivp ivps/Wave3D_radius2.ivp --db out.db"'
-    The output will be in 'out.db'
+
+    Input arguments are machine file, config file and ivp.
+    * machine file - The machine files corresponding to the architecture we considered are examples/machines/CascadelakeSP_Gold-6248.yml, examples/machines/examples/machines/Zen_ROME-7452.yml.
+    * config file - These contain the settings like fold sizes and blocking. Config files corresponding to CLX and ROME are in examples/config/config_clx.tune and examples/config/config_rome.tune
+    * ivp - Defines the IVP problem. IVP files can be found in examples/ivps/*
+    * output database name - Specify the output database name
+
+    For example for CLX with Wave3d, radius=2 IVP use
+    'singularity run --app Fig6-prediction <container_name> "--machine examples/machines/CascadelakeSP_Gold-6248.yml --config examples/config/config_clx.tune --bench --ivp examples/ivps/Wave3D_radius2.ivp --db Fig6_Wave3d_radius2.db"'
+
+    The output will be in 'Fig6_Wave3d_radius2.db'
     Expect 8-10 hours to run this, since it generates different YASK kernels and tests them.
     Also it needs diskspace (10 GB) as the generated kernels will be cached for later execution in Fig6-measurements app.
 
@@ -238,17 +244,23 @@ From: ubuntu:latest
     export PATH=$PATH:${SINGULARITY_BASE_PATH}/installkit/bin/
     cd $SINGULARITY_BASE_PATH
     echo "Running Fig6-prediction with arguments $*"
-    echo "excuting export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --compiler icc --impl impls/pirk/ --kernel kernels/pirk/ --method methods/implicit/radauIIA7. ode --mode MODEL --verbose --filter-yasksite-opt $@"
-    bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --compiler icc --impl impls/pirk/ --kernel kernels/pirk/ --method methods/implicit/radauIIA7. ode --mode MODEL --verbose --filter-yasksite-opt $@"
+    echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --compiler icc --impl examples/impls/pirk/ --kernel examples/kernels/pirk/ --method examples/methods/implicit/radauIIA7.ode --mode MODEL --verbose --filter-yasksite-opt $@"
+    bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --compiler icc --impl examples/impls/pirk/ --kernel examples/kernels/pirk/ --method examples/methods/implicit/radauIIA7.ode --mode MODEL --verbose --filter-yasksite-opt $@"
 
-#### App for running Fig6 and Table 3 measurement #####
+#### App for running Fig6 and Table 3 measurement results #####
 %apphelp Fig6-measurement
     Reproduce measurement results in Figure 6 and Table 3 of the paper.
-    This can be run only after running 'Fig6-prediction' app, since the cached kernels produced by 'Fig6-prediction' is required here.
-    The input arguments are number of threads, machine file, kernel, radius, output folder and config file.
-    For example for running Wave3D, radius 2, on Intel Cascade Lake 6248 use:
-    'singularity run --app Fig6-measurement <container_name> "-m machines/CascadelakeSP_Gold-6248.yml -k Wave3D -r 2 --config config/config_clx.tune -o measurements"'
-    This will write results to a folder called 'measurements'.
+    Note: This can be run only after running 'Fig6-prediction' app, since the cached kernels produced by 'Fig6-prediction' are required here.
+
+    The input arguments are number of threads, machine file, IVP kernel, radius, config file  and output folder.
+    * threads = For reproducing the results in the paper set threads to number of cores on 1 socket (20 on CLX and 32 on ROME which we tested).
+    * machine file = The machine files corresponding to the architecture we considered are examples/machines/CascadelakeSP_Gold-6248.yml, examples/machines/examples/machines/Zen_ROME-7452.yml.
+    * config file = These contain the settings like fold sizes and blocking. Config files corresponding to CLX and ROME are in examples/config/config_clx.tune and examples/config/config_rome.tune
+    * IVP kernel = This is either Heat3D or Wave3D depending on the IVP problem.
+    * Output folder = Name of output folder where CSV results are written to.
+
+    For example for running Wave3D, radius 2, on Intel CLX use: 'singularity run --app Fig6-measurement <container_name> "-c 20 -m examples/machines/CascadelakeSP_Gold-6248.yml -k Wave3D -r 2 --config config/config_clx.tune -o Fig6_meas_Wave3D_radius2"'
+    This will write results to a folder called 'Fig6_meas_Wave3D_radius2'.
 
 %apprun Fig6-measurement
     cd $SINGULARITY_BASE_PATH
