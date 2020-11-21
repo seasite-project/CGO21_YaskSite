@@ -235,7 +235,7 @@ From: ubuntu:latest
     * output database name - Specify the output database name
 
     For example for CLX with Wave3d, radius=2 IVP use
-    'singularity run --app Fig6-prediction <container_name> "--machine examples/machines/CascadelakeSP_Gold-6248.yml --config examples/config/config_clx.tune --bench --ivp examples/ivps/Wave3D_radius2.ivp --db Fig6_Wave3d_radius2.db"'
+    'singularity run --app Fig6-prediction <container_name> "--machine examples/machines/CascadelakeSP_Gold-6248.yml --config examples/config/config_clx.tune --ivp examples/ivps/Wave3D_radius2.ivp --db Fig6_Wave3d_radius2.db"'
 
     The output will be in 'Fig6_Wave3d_radius2.db'
     Expect 8-10 hours to run this, since it generates different YASK kernels and tests them.
