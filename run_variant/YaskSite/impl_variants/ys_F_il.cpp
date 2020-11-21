@@ -61,13 +61,13 @@ void main(int argc, char** argv)
 
     char* opt = optParse.opt;
 
-    std::string str_RHS_LC_predictor("ys_RHS_LC_predictor_jil_plain");
-    std::string str_RHS_LC("ys_RHS_LC_jil_plain");
-    std::string str_RHS_Approx_Update("ys_RHS_Approx_Update_jl_plain");
+    std::string str_RHS_LC_predictor("ys_RHS_LC_predictor_jil");
+    std::string str_RHS_LC("ys_RHS_LC_jil");
+    std::string str_RHS_Approx_Update("ys_RHS_Approx_Update_jl");
 
     char* kernel = optParse.kernel;
     char *rem_str;
-    STRINGIFY(rem_str, "_folding%d_%d_%d_yasksite_%s", fold[0], fold[1], fold[2], kernel);
+    STRINGIFY(rem_str, "_%s_folding%d_%d_%d_yasksite_%s", opt, fold[0], fold[1], fold[2], kernel);
 
     str_RHS_LC_predictor += std::string(rem_str);
     str_RHS_LC += std::string(rem_str);
