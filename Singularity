@@ -237,17 +237,21 @@ From: ubuntu:latest
     For example for CLX with Wave3d, radius=2 IVP use
     'singularity run --app Fig6-prediction <container_name> "--machine examples/machines/CascadelakeSP_Gold-6248.yml --config examples/config/config_clx.tune --ivp examples/ivps/Wave3D_radius2.ivp --db Fig6_Wave3d_radius2.db"'
 
-    The output will be in 'Fig6_Wave3d_radius2.db'
+    The output will be in SQL database 'Fig6_Wave3d_radius2.db'(see 'impl_variant_prediction' table).
+    If the same machine files as in the paper are used it will additionally
+    convert SQL database to csv.
     Expect 8-10 hours to run this, since it generates different YASK kernels and tests them.
     Also it needs diskspace (10 GB) as the generated kernels will be cached for later execution in Fig6-measurements app.
 
 %apprun Fig6-prediction
+    mkdir -p results
     export PYTHONPATH=${SINGULARITY_BASE_PATH}/installkit/lib/python3.8/site-packages/
     export PATH=$PATH:${SINGULARITY_BASE_PATH}/installkit/bin/
     cd $SINGULARITY_BASE_PATH
     echo "Running Fig6-prediction with arguments $*"
     echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --compiler icc --impl examples/impls/pirk/ --kernel examples/kernels/pirk/ --method examples/methods/implicit/radauIIA7.ode --mode MODEL --verbose --filter-yasksite-opt $@"
     bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --compiler icc --impl examples/impls/pirk/ --kernel examples/kernels/pirk/ --method examples/methods/implicit/radauIIA7.ode --mode MODEL --verbose --filter-yasksite-opt $@"
+    ${SINGULARITY_BASE_PATH}/db2csv.sh $@ -o results/Fig6-prediction
 
 #### App for running Fig6 and Table 3 measurement results #####
 %apphelp Fig6-measurement
