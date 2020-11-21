@@ -69,8 +69,9 @@ cores=$(cat ${mcFile} | grep "cores per socket:" | cut -d":" -f2)
 echo "freq = $freq"
 echo "cores = $cores"
 
-mkdir -p ${outFolder}
-cd ${outFolder}
+resultFolder="${outFolder}/${ivp}"
+mkdir -p ${resultFolder}
+cd ${resultFolder}
 
 offsite_impl2csv --db ${dbFile} --machine 1 --compiler 1 --cores ${cores} --frequency ${freq} --method radauIIa7 --ivp ${ivp} --N 20:720:20 --impl "${impls}"
 
@@ -82,6 +83,6 @@ for (( ctr=1; ctr<=${totCtr}+1; ++ctr )); do
     cur_impl_name=$(echo "${cur_impl_name_w_space}" | xargs)
     cur_impl_id_w_space=$(echo ${impl_id} | cut -d"," -f$ctr)
     cur_impl_id=$(echo "${cur_impl_id_w_space}" | xargs)
-    echo "cp ${outFolder}/${cur_impl_id} ${outFolder}/${cur_impl_name}"
-    cp "${outFolder}/${cur_impl_id}" "${outFolder}/${cur_impl_name}"
+    echo "cp ${resultFolder}/${cur_impl_id} ${resultFolder}/${cur_impl_name}"
+    cp "${resultFolder}/${cur_impl_id}" "${resultFolder}/${cur_impl_name}"
 done
