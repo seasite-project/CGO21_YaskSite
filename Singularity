@@ -240,7 +240,7 @@ From: ubuntu:latest
 
     The output will be in SQL database 'Fig6_Wave3d_radius2.db'(see 'impl_variant_prediction' table).
     If the same machine files as in the paper are used it will additionally
-    convert SQL database to csv and write it in results/Fig-prediction folder.
+    convert SQL database to csv and write it in results/Fig6-prediction folder.
     Expect 8-10 hours to run this, since it generates different YASK kernels and tests them.
     Also it needs diskspace (10 GB) as the generated kernels will be cached for later execution in Fig6-measurements app.
 
@@ -252,25 +252,25 @@ From: ubuntu:latest
     echo "Running Fig6-prediction with arguments $*"
     echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --compiler icc --impl examples/impls/pirk/ --kernel examples/kernels/pirk/ --method examples/methods/implicit/radauIIA7.ode --mode MODEL --verbose --filter-yasksite-opt $@"
     bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --compiler icc --impl examples/impls/pirk/ --kernel examples/kernels/pirk/ --method examples/methods/implicit/radauIIA7.ode --mode MODEL --verbose --filter-yasksite-opt $@"
-    ${SINGULARITY_BASE_PATH}/db2csv.sh $@ -o results/Fig6-prediction
+    bash -c "export PATH=$PATH:${SINGULARITY_BASE_PATH}/installkit/bin/ && export PYTHONPATH=${SINGULARITY_BASE_PATH}/installkit/lib/python3.8/site-packages/ && ${SINGULARITY_BASE_PATH}/db2csv.sh $@ -o results/Fig6-prediction"
 
 #### App for running Fig6 and Table 3 measurement results #####
 %apphelp Fig6-measurement
     Reproduce measurement results in Figure 6 and Table 3 of the paper.
     Note: This can be run only after running 'Fig6-prediction' app, since the cached kernels produced by 'Fig6-prediction' are required here.
 
-    The input arguments are number of threads, machine file, IVP kernel, radius, config file  and output folder.
+    The input arguments are number of threads, machine file, IVP kernel, radius and config file.
     * threads = For reproducing the results in the paper set threads to number of cores on 1 socket (20 on CLX and 32 on ROME which we tested).
     * machine file = The machine files corresponding to the architecture we considered are examples/machines/CascadelakeSP_Gold-6248.yml, examples/machines/examples/machines/Zen_ROME-7452.yml.
     * config file = These contain the settings like fold sizes and blocking. Config files corresponding to CLX and ROME are in examples/config/config_clx.tune and examples/config/config_rome.tune
     * IVP kernel = This is either Heat3D or Wave3D depending on the IVP problem.
-    * Output folder = Name of output folder where CSV results are written to.
 
-    For example for running Wave3D, radius 2, on Intel CLX use: 'singularity run --app Fig6-measurement <container_name> "-c 20 -m examples/machines/CascadelakeSP_Gold-6248.yml -k Wave3D -r 2 --config examples/config/config_clx.tune -o Fig6_meas_Wave3D_radius2"'
-    This will write results to a folder called 'Fig6_meas_Wave3D_radius2'.
+    For example for running Wave3D, radius 2, on Intel CLX use: 'singularity run --app Fig6-measurement <container_name> "-c 20 -m examples/machines/CascadelakeSP_Gold-6248.yml -k Wave3D -r 2 --config examples/config/config_clx.tune"'
+
+    This will write results to a folder called 'results/Fig6-measurement'.
 
 %apprun Fig6-measurement
     cd $SINGULARITY_BASE_PATH
     echo "Running Fig6-measurement with arguments $*"
     echo "executing source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/run_script.sh -p run_variant/YaskSite/build $@"
-    bash -c "source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/run_script.sh -p run_variant/YaskSite/build $@"
+    bash -c "source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/run_script.sh -p run_variant/YaskSite/build -o results/Fig6-measurement $@"
