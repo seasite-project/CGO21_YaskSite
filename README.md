@@ -12,7 +12,9 @@ Build/Download the singularity container.
 ```build --fakeroot YS_CGO.sif Singularity```
 
 ### Alternative 2: Download the pre-build container (approximately 2 GB in size)
-```wget TODO```
+The pre-build container is available under the following link https://doi.org/10.5281/zenodo.4283337
+and can be installed using:
+```wget https://zenodo.org/record/4283337/files/YS_CGO.sif?download=1 -O YS_CGO.sif```
 
 ## Step 3
 Once singularity image is build on the benchmarking system the first step is to run the app called build.
