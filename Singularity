@@ -154,7 +154,7 @@ From: ubuntu:latest
     For example for CLX and 20 threads : 'singularity run --app Fig4 <container_name> "-m <machine_file> -c <ncores>"'
 
     The app outputs CSV files in results/Fig4 folder. 
-    The column corresponding to 'mlups' are the required performance.
+    The entries in column corresponding to 'mlups' are the required performance and 'AT time' column correspond to tuning time.
     The 'plain', 'spatial' and 'AT' corrspond to 'plain', 'analytical' and 'GD' keywords in the figure.
     The plot can be produced by taking the statistics over all sizes in the output files.
 
