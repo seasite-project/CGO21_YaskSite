@@ -1,6 +1,6 @@
 benchmark: OMP_BARRIER
 machine: Zen_ROME-7452
-compiler: icc 19.0.2.187
+compiler: icc 2021.1
 flags: -O3 -xHost -fno-alias -qopenmp
 frequency: 2350000000.0
 data:

@@ -1,6 +1,6 @@
 benchmark: OMP_BARRIER
 machine: CascadelakeSP_Gold-6248
-compiler: icc 19.0.2.187
+compiler: icc 2021.1
 flags: -O3 -fno-alias -xCORE-AVX512 -qopenmp -qopt-zmm-usage=high
 frequency: 2500000000.0
 data:
