@@ -9,13 +9,8 @@ git clone https://github.com/seasite-project/CGO21_YaskSite_AD.git && cd CGO21_Y
 ```
 
 ## Step 2
-Build/Download the singularity container. 
-### Alternative 1: Singularity build (need fakeroot right)
-```
-singularity build --fakeroot YS_CGO.sif Singularity
-```
+Download the singularity container. 
 
-### Alternative 2: Download the pre-build container (approximately 2 GB in size)
 The pre-build container is available under the following link https://doi.org/10.5281/zenodo.4283337
 and can be installed using:
 ```
