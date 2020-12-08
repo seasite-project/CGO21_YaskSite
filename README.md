@@ -3,8 +3,10 @@
 * Requires: singularity
 
 ## Step 1
-Clone the repo and go to the cloned directory
-```git clone https://github.com/seasite-project/CGO21_YaskSite_AD.git && cd CGO21_YaskSite_AD```
+Clone the repo and go to the cloned directory.
+```
+git clone https://github.com/seasite-project/CGO21_YaskSite_AD.git && cd CGO21_YaskSite_AD
+```
 
 ## Step 2
 Build/Download the singularity container. 
