@@ -32,7 +32,7 @@ singularity run --app build YS_CGO.sif
 
 ## Step 4
 Run the apps corresponding to YaskSite and Offsite. There are also pre-configured apps that helps to 
-reproduce data in figures of the paper. To see the app list use: 
+reproduce data in figures of the paper. To see the list of available apps use: 
 ```
 singularity run-help YS_CGO.sif
 ```
