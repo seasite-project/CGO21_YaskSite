@@ -138,6 +138,7 @@ From: ubuntu:latest
     mkdir -p results
     echo "Running Fig3 with arguments $*"
     threads=$(echo "$*" | grep -o -P "\-c.*" | cut -d"-" -f2 | cut -d"c" -f 2)
+    rm -rf results/Fig3
     echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:1000 -f auto -r 1 -O plain:spatial -o results/Fig3 $@"
     bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:1000 -f auto -r 1 -O plain:spatial -o results/Fig3 $@"
     echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:1000 -f auto -r 4 -O plain:spatial -o results/Fig3 $@"
@@ -162,6 +163,7 @@ From: ubuntu:latest
     cd $SINGULARITY_BASE_PATH
     mkdir -p results
     echo "Running Fig4 with arguments $*"
+    rm -rf results/Fig4
     threads=$(echo "$*" | grep -o -P "\-c.*" | cut -d"-" -f2 | cut -d"c" -f 2)
     echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:1000 -f auto -r 1 -O plain:spatial:AT -o results/Fig4 $@"
     bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:1000 -f auto -r 1 -O plain:spatial:AT -o results/Fig4 $@"
@@ -189,8 +191,9 @@ From: ubuntu:latest
     cd $SINGULARITY_BASE_PATH
     mkdir -p results
     echo "Running Fig5 with arguments $*"
+    rm -rf results/Fig5
     threads=$(echo "$*" | grep -o -P "\-c.*" | cut -d"-" -f2 | cut -d"c" -f 2)
-   echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:400 -O plain -f 1:1:8 -r 1 -o results/Fig5 $@"
+    echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:400 -O plain -f 1:1:8 -r 1 -o results/Fig5 $@"
     bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:400 -O plain -f 1:1:8 -r 1 -o results/Fig5 $@"
     echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:400 -O plain -f 1:8:1 -r 1 -o results/Fig5 $@"
     bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && likwid-pin -c S0:0-$((threads-1)) perf_wo_likwid -k Wave3D:3 -t 1 -R 20:20:400 -O plain -f 1:8:1 -r 1 -o results/Fig5 $@"
@@ -273,5 +276,6 @@ From: ubuntu:latest
 %apprun Fig6-measurement
     cd $SINGULARITY_BASE_PATH
     echo "Running Fig6-measurement with arguments $*"
-    echo "executing source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/run_script.sh -p run_variant/YaskSite/build $@"
+    rm -rf results/Fig6-measurement
+    echo "executing source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/run_script.sh -p run_variant/YaskSite/build -o results/Fig6-measurement $@"
     bash -c "source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/run_script.sh -p run_variant/YaskSite/build -o results/Fig6-measurement $@"
