@@ -1,16 +1,19 @@
 # CGO21_YaskSite_AD
 
-* Requires: singularity v 3.6.4 or higher. If singularity is not installed use
-```
-  ./install_singularity.sh
-```
-
-## Step 1
+## Step 1.1
 Clone the repo and go to the cloned directory.
 ```
 git clone https://github.com/seasite-project/CGO21_YaskSite_AD.git 
 cd CGO21_YaskSite_AD
 ```
+
+## Step 1.2 
+For next steps we need singularity v 3.6.4. 
+If singularity is not installed use
+```
+  ./install_singularity.sh
+```
+
 
 ## Step 2
 Download the singularity container. 
