@@ -83,7 +83,7 @@ memory hierarchy:
     transfers overlap: false
     penalty cycles per read stream: 0
     penalty cycles per mem cy: 0.3
-    size per group: 128.00 GB
+    size per group: 200.00 GB
     threads per group: 64
 model name: AMD EPYC 7452 32-Core Processor
 model type: AMD K17 (Zen2) architecture
