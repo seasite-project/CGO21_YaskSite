@@ -34,7 +34,8 @@ do
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-ivp=$(basename ${ivpFile} ".ivp")
+ivp_w_space=$(basename ${ivpFile} ".ivp")
+ivp=$(echo ${ivp_w_space})
 impls_rome="1,3,5,7,9,11,13,15,17,18,19,20,21,22,23,24"
 impls_clx="1,3,5,7,9,11,13,15,17,19,21,22,23,24,25,26,27,28,29,30"
 isClx=$(echo $mcFile | grep "CascadelakeSP_Gold-6248")
@@ -69,11 +70,11 @@ cores=$(cat ${mcFile} | grep "cores per socket:" | cut -d":" -f2)
 echo "freq = $freq"
 echo "cores = $cores"
 
+cur_path=${PWD}
 resultFolder="${outFolder}/${ivp}"
 mkdir -p ${resultFolder}
 cd ${resultFolder}
-
-offsite_impl2csv --db ${dbFile} --machine 1 --compiler 1 --cores ${cores} --frequency ${freq} --method radauIIa7 --ivp ${ivp} --N 20:720:20 --impl "${impls}"
+offsite_impl2csv --db ${cur_path}/${dbFile} --machine 1 --compiler 1 --cores ${cores} --frequency ${freq} --method radauIIa7 --ivp ${ivp} --N 20:720:20 --impl "${impls}"
 
 cd -
 
@@ -83,6 +84,6 @@ for (( ctr=1; ctr<=${totCtr}+1; ++ctr )); do
     cur_impl_name=$(echo "${cur_impl_name_w_space}" | xargs)
     cur_impl_id_w_space=$(echo ${impl_id} | cut -d"," -f$ctr)
     cur_impl_id=$(echo "${cur_impl_id_w_space}" | xargs)
-    echo "cp ${resultFolder}/${cur_impl_id} ${resultFolder}/${cur_impl_name}"
+#    echo "cp ${resultFolder}/${cur_impl_id} ${resultFolder}/${cur_impl_name}"
     cp "${resultFolder}/${cur_impl_id}" "${resultFolder}/${cur_impl_name}"
 done

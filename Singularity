@@ -21,13 +21,14 @@ From: ubuntu:latest
     apt-get install -y libpcre3-dev
     apt-get install -y  python3-pip
     pip3 install --user wheel
-    wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-    apt-get install -y gnupg
-    apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-    rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-    echo "deb https://apt.repos.intel.com/oneapi all main" | tee /etc/apt/sources.list.d/oneAPI.list
-    apt-get update
-    apt-get install -y intel-hpckit
+    wget https://registrationcenter-download.intel.com/akdlm/irc_nas/17431/l_BaseKit_p_2021.1.0.2659_offline.sh
+    chmod +x l_BaseKit_p_2021.1.0.2659_offline.sh
+    sh ./l_BaseKit_p_2021.1.0.2659_offline.sh -a --silent --eula accept --components intel.oneapi.lin.dpcpp-cpp-compiler:intel.oneapi.lin.dpcpp-library
+    rm l_BaseKit_p_2021.1.0.2659_offline.sh
+    wget https://registrationcenter-download.intel.com/akdlm/irc_nas/17427/l_HPCKit_p_2021.1.0.2684_offline.sh 
+    chmod +x l_HPCKit_p_2021.1.0.2684_offline.sh
+    sh ./l_HPCKit_p_2021.1.0.2684_offline.sh -a --silent --eula accept --components intel.oneapi.lin.dpcpp-cpp-compiler-pro:intel.oneapi.lin.mpi.devel
+    rm l_HPCKit_p_2021.1.0.2684_offline.sh
     git clone https://github.com/RRZE-HPC/likwid.git
     cd likwid
     cp config.mk config_old.mk
@@ -49,8 +50,8 @@ From: ubuntu:latest
     * Fig3
     * Fig4
     * Fig5
-    * Fig6-prediction
-    * Fig6-measurement
+    * Fig6prediction
+    * Fig6measurement
 
 %environment
    export SINGULARITY_BASE_PATH=${PWD}
@@ -80,7 +81,7 @@ From: ubuntu:latest
     mv seasite-project-YaskSite-663ac01 YaskSite
     cd YaskSite
     mkdir build && cd build
-    bash -c "source /opt/intel/oneapi/setvars.sh && CC=icc CXX=icpc cmake .. -DI_AGREE_ALL_TERMS_AND_CONDITIONS=true -DCMAKE_INSTALL_PREFIX=${SINGULARITY_BASE_PATH}/installkit -DTEMP_DIR=${SINGULARITY_BASE_PATH}/tmp_YaskSite -DLIKWID_LIBRARIES=/usr/local/lib/liblikwid.so -DLIKWID_INCLUDE_DIR=/usr/local/include && make && make install"
+    bash -c "source /opt/intel/oneapi/setvars.sh && CC=icc CXX=icpc cmake .. -DI_AGREE_ALL_TERMS_AND_CONDITIONS=true -DCMAKE_INSTALL_PREFIX=${SINGULARITY_BASE_PATH}/installkit -DTEMP_DIR=${SINGULARITY_BASE_PATH}/tmp_YaskSite -DLIKWID_LIBRARIES=/usr/local/lib/liblikwid.so -DLIKWID_INCLUDE_DIR=/usr/local/include -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc -DMPIEXEC_EXECUTABLE=/opt/intel/oneapi/mpi/2021.1.1/bin/mpiexec -DMPI_C_HEADER_DIR=/opt/intel/oneapi/mpi/2021.1.1/include/ -DMPI_CXX_HEADER_DIR=/opt/intel/oneapi/mpi/2021.1.1/include/ -DMPI_C_ADDITIONAL_INCLUDE_DIRS=/opt/intel/oneapi/mpi/2021.1.1/include/ -DMPI_CXX_ADDITIONAL_INCLUDE_DIRS=/opt/intel/oneapi/mpi/2021.1.1/include/ && make && make install"
     cd ../example
     mkdir build && cd build
     bash -c "source /opt/intel/oneapi/setvars.sh && CC=icc CXX=icpc cmake .. -DyaskSite_DIR=${SINGULARITY_BASE_PATH}/installkit && make"
@@ -239,28 +240,28 @@ From: ubuntu:latest
     * output database name - Specify the output database name
 
     For example for CLX with Wave3d, radius=2 IVP use
-    'singularity run --app Fig6-prediction <container_name> "--machine examples/machines/CascadelakeSP_Gold-6248.yml --config examples/config/config_clx.tune --ivp examples/ivps/Wave3D_radius2.ivp --db Fig6_Wave3d_radius2.db"'
+    'singularity run --app Fig6prediction <container_name> "--machine examples/machines/CascadelakeSP_Gold-6248.yml --config examples/config/config_clx.tune --ivp examples/ivps/Wave3D_radius2.ivp --db Fig6_Wave3d_radius2.db"'
 
     The output will be in SQL database 'Fig6_Wave3d_radius2.db'(see 'impl_variant_prediction' table).
     If the same machine files as in the paper are used it will additionally
-    convert SQL database to csv and write it in results/Fig6-prediction folder.
+    convert SQL database to csv and write it in results/Fig6prediction folder.
     Expect 8-10 hours to run this, since it generates different YASK kernels and tests them.
-    Also it needs diskspace (10 GB) as the generated kernels will be cached for later execution in Fig6-measurements app.
+    Also it needs diskspace (10 GB) as the generated kernels will be cached for later execution in Fig6measurements app.
 
-%apprun Fig6-prediction
+%apprun Fig6prediction
     mkdir -p results
     export PYTHONPATH=${SINGULARITY_BASE_PATH}/installkit/lib/python3.8/site-packages/
     export PATH=$PATH:${SINGULARITY_BASE_PATH}/installkit/bin/
     cd $SINGULARITY_BASE_PATH
-    echo "Running Fig6-prediction with arguments $*"
+    echo "Running Fig6prediction with arguments $*"
     echo "executing export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --compiler icc --impl examples/impls/pirk/ --kernel examples/kernels/pirk/ --method examples/methods/implicit/radauIIA7.ode --mode MODEL --verbose --filter-yasksite-opt $@"
     bash -c "export PATH=$PATH:YaskSite/example/build && source /opt/intel/oneapi/setvars.sh && offsite_tune --tool yasksite --compiler icc --impl examples/impls/pirk/ --kernel examples/kernels/pirk/ --method examples/methods/implicit/radauIIA7.ode --mode MODEL --verbose --filter-yasksite-opt $@"
-    bash -c "export PATH=$PATH:${SINGULARITY_BASE_PATH}/installkit/bin/ && export PYTHONPATH=${SINGULARITY_BASE_PATH}/installkit/lib/python3.8/site-packages/ && ${SINGULARITY_BASE_PATH}/db2csv.sh $@ -o results/Fig6-prediction"
+    bash -c "export PATH=$PATH:${SINGULARITY_BASE_PATH}/installkit/bin/ && export PYTHONPATH=${SINGULARITY_BASE_PATH}/installkit/lib/python3.8/site-packages/ && ${SINGULARITY_BASE_PATH}/db2csv.sh $@ -o results/Fig6prediction"
 
 #### App for running Fig6 and Table 3 measurement results #####
-%apphelp Fig6-measurement
+%apphelp Fig6measurement
     Reproduce measurement results in Figure 6 and Table 3 of the paper.
-    Note: This can be run only after running 'Fig6-prediction' app, since the cached kernels produced by 'Fig6-prediction' are required here.
+    Note: This can be run only after running 'Fig6prediction' app, since the cached kernels produced by 'Fig6prediction' are required here.
 
     The input arguments are number of threads, machine file, IVP kernel, radius and config file.
     * threads = For reproducing the results in the paper set threads to number of cores on 1 socket (20 on CLX and 32 on ROME which we tested).
@@ -269,13 +270,13 @@ From: ubuntu:latest
     * IVP kernel = This is either Heat3D, Wave3D_radius2  or Wave3D_radius4 depending on the IVP problem.
 
     For example for running Wave3D, radius 2, on Intel CLX use: 
-    'singularity run --app Fig6-measurement <container_name> "-c 20 -m examples/machines/CascadelakeSP_Gold-6248.yml -k Wave3D_radius2 -r 2 --config examples/config/config_clx.tune"'
+    'singularity run --app Fig6measurement <container_name> "-c 20 -m examples/machines/CascadelakeSP_Gold-6248.yml -k Wave3D_radius2 -r 2 --config examples/config/config_clx.tune"'
 
-    This will write results to a folder called 'results/Fig6-measurement'.
+    This will write results to a folder called 'results/Fig6measurement'.
 
-%apprun Fig6-measurement
+%apprun Fig6measurement
     cd $SINGULARITY_BASE_PATH
-    echo "Running Fig6-measurement with arguments $*"
-    rm -rf results/Fig6-measurement
-    echo "executing source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/run_script.sh -p run_variant/YaskSite/build -o results/Fig6-measurement $@"
-    bash -c "source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/run_script.sh -p run_variant/YaskSite/build -o results/Fig6-measurement $@"
+    echo "Running Fig6measurement with arguments $*"
+    rm -rf results/Fig6measurement
+    echo "executing source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/run_script.sh -p run_variant/YaskSite/build -o results/Fig6measurement $@"
+    bash -c "source /opt/intel/oneapi/setvars.sh && run_variant/YaskSite/run_script.sh -p run_variant/YaskSite/build -o results/Fig6measurement $@"

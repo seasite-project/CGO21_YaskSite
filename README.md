@@ -1,24 +1,31 @@
 # CGO21_YaskSite_AD
 
-* Requires: singularity
+## Step 1.1
+Clone this repository and go to the cloned directory.
+```
+git clone https://github.com/seasite-project/CGO21_YaskSite_AD.git 
+cd CGO21_YaskSite_AD
+```
 
-## Step 1
-Clone the repo and go to the cloned directory.
+## Step 1.2 
+For the next steps we need singularity v 3.6.4 or higher. 
+If singularity is not installed use
 ```
-git clone https://github.com/seasite-project/CGO21_YaskSite_AD.git && cd CGO21_YaskSite_AD
+  ./install_singularity.sh
 ```
+
 
 ## Step 2
 Download the singularity container. 
 
-The pre-build container is available under the following link https://doi.org/10.5281/zenodo.4283337
+The pre-build container is available under the following link https://doi.org/10.5281/zenodo.4313360
 and can be installed using:
 ```
-wget https://zenodo.org/record/4283337/files/YS_CGO.sif?download=1 -O YS_CGO.sif
+wget https://zenodo.org/record/4313360/files/YS_CGO.sif?download=1 -O YS_CGO.sif
 ```
 
 ## Step 3
-Once singularity image is downloaded/build on the benchmarking system the first step is to run the app called build.
+Once singularity image is downloaded on the benchmarking system the first step is to run the app called build.
 This installs YaskSite. It should be done at runtime since the YaskSite does machine specific configuration
 at build time. Run the following to do this:
 ```
