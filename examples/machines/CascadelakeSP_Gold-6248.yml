@@ -102,7 +102,7 @@ memory hierarchy:
     cores per group: 40
     threads per group: 80
     penalty cycles per read stream: 0
-    size per group: 40 GB
+    size per group: 200 GB
 benchmarks:
   kernels:
     copy:
