@@ -21,13 +21,13 @@ From: ubuntu:latest
     apt-get install -y libpcre3-dev
     apt-get install -y  python3-pip
     pip3 install --user wheel
-    wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+    wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
     apt-get install -y gnupg
-    apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-    rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+    apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+    rm GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
     echo "deb https://apt.repos.intel.com/oneapi all main" | tee /etc/apt/sources.list.d/oneAPI.list
     apt-get update
-    apt-get install -y intel-hpckit
+    apt-get install -y intel-oneapi-compiler-dpcpp-cpp intel-oneapi-openmp intel-oneapi-mpi
     git clone https://github.com/RRZE-HPC/likwid.git
     cd likwid
     cp config.mk config_old.mk
@@ -247,7 +247,7 @@ From: ubuntu:latest
     Expect 8-10 hours to run this, since it generates different YASK kernels and tests them.
     Also it needs diskspace (10 GB) as the generated kernels will be cached for later execution in Fig6-measurements app.
 
-%apprun Fig6-prediction
+%apprun Fig6prediction
     mkdir -p results
     export PYTHONPATH=${SINGULARITY_BASE_PATH}/installkit/lib/python3.8/site-packages/
     export PATH=$PATH:${SINGULARITY_BASE_PATH}/installkit/bin/
