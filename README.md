@@ -22,7 +22,7 @@ wget https://zenodo.org/record/4283337/files/YS_CGO.sif?download=1 -O YS_CGO.sif
 ```
 
 ## Step 3
-Once singularity image is downloaded/build on the benchmarking system the first step is to run the app called build.
+Once singularity image is downloaded on the benchmarking system the first step is to run the app called build.
 This installs YaskSite. It should be done at runtime since the YaskSite does machine specific configuration
 at build time. Run the following to do this:
 ```
