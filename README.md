@@ -3,7 +3,7 @@
 # Setup phase
 Steps 1 to 3 guide you through setting up.
 
-# Step 1.1
+## Step 1.1
 Clone this repository and go to the cloned directory.
 ```
 git clone https://github.com/seasite-project/CGO21_YaskSite_AD.git
