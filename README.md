@@ -37,7 +37,7 @@ singularity run --app build YS_CGO.sif
 ```
 # Run phase
 Step 4 illustrates how to run the app to reproduce results.
-It is recommended the settings in the paper is followed to get comparable results.
+It is recommended the settings in the paper are followed to get comparable results.
 
 
 ## Step 4
