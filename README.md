@@ -3,7 +3,8 @@
 ## Step 1.1
 Clone this repository and go to the cloned directory.
 ```
-git clone https://github.com/seasite-project/CGO21_YaskSite_AD.git 
+git clone https://github.com/seasite-project/CGO21_YaskSite_AD.git
+git checkout CGO21v0.1
 cd CGO21_YaskSite_AD
 ```
 
