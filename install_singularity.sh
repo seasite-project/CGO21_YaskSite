@@ -9,6 +9,7 @@ rm go$VERSION.$OS-$ARCH.tar.gz    # Deletes the ``tar`` file
 
 
 echo 'export PATH=/usr/local/go/bin:$PATH' >> ~/.bashrc && source ~/.bashrc
+export PATH=/usr/local/go/bin:$PATH
 
 rm -r singularity/
 export VERSION=3.7.0 && wget https://github.com/hpcng/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz && tar -xzf singularity-${VERSION}.tar.gz && cd singularity
