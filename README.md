@@ -1,6 +1,9 @@
-# CGO21_YaskSite_AD
+# <ins> CGO21_YaskSite_AD <\ins>
 
-## Step 1.1
+# Setup phase
+Steps 1 to 3 guide you through setting up.
+
+# Step 1.1
 Clone this repository and go to the cloned directory.
 ```
 git clone https://github.com/seasite-project/CGO21_YaskSite_AD.git
@@ -32,6 +35,10 @@ at build time. Run the following to do this:
 ```
 singularity run --app build YS_CGO.sif 
 ```
+# Run phase
+Step 4 illustrates how to run the app to reproduce results.
+It is recommended the settings in the paper is followed to get comparable results.
+
 
 ## Step 4
 Run the apps corresponding to YaskSite and Offsite. There are also pre-configured apps that helps to 
