@@ -12,7 +12,7 @@ cd CGO21_YaskSite_AD
 For the next steps we need singularity v 3.6.4 or higher. 
 If singularity is not installed, you can install singularity with the following script if you have root access.
 ```
-  ./install_singularity.sh
+./install_singularity.sh
 ```
 
 
