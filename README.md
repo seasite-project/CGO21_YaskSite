@@ -46,8 +46,8 @@ reproduce data in figures of the paper. To see the list of available apps use:
 ```
 singularity run-help YS_CGO.sif
 ```
-The method to run each apps are described in corresponding app's help. For example help on how to run Fig3 app 
-(reproduces results in Fig3 of the paper) can be obtained using:
+The method to run each apps are described in corresponding app's help. For example help on how to run Fig4 app 
+(reproduces results in Fig4 of the paper) can be obtained using:
 ```
-singularity run-help --app Fig3 YS_CGO.sif
+singularity run-help --app Fig4 YS_CGO.sif
 ```
