@@ -22,10 +22,10 @@ If singularity is not installed, you can install singularity with the following 
 ## Step 2
 Download the singularity container. 
 
-The pre-build container is available under the following link https://doi.org/10.5281/zenodo.4313360
+The pre-build container is available under the following link https://doi.org/10.5281/zenodo.4415558
 and can be installed using:
 ```
-wget https://zenodo.org/record/4313360/files/YS_CGO.sif?download=1 -O YS_CGO.sif
+wget https://zenodo.org/record/4415558/files/YS_CGO.sif?download=1 -O YS_CGO.sif
 ```
 
 ## Step 3
